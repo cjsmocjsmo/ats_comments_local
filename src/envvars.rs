@@ -20,7 +20,7 @@
     
 //     let comserv_db_path = env::var("COMSERV_DB_PATH");
 //     if comserv_db_path.is_err() {
-//         env::set_var("COMSERV_DB_PATH", "/usr/share/ats_comments/ats_comments/db");
+//         env::set_var("COMSERV_DB_PATH", "/usr/share/ats_comments/ats_comments_local/db");
 //     };
 
 //     let comserv_uploads = env::var("COMSERV_UPLOADS");
@@ -32,7 +32,7 @@
 //     if comserv_acct_db.is_err() {
 //         env::set_var(
 //             "COMSERV_ACCT_DB",
-//             "/usr/share/ats_comments/ats_comments/db/accounts.db",
+//             "/usr/share/ats_comments/ats_comments_local/db/accounts.db",
 //         );
 //     };
 
@@ -40,7 +40,7 @@
 //     if comserv_auth_db.is_err() {
 //         env::set_var(
 //             "COMSERV_AUTH_DB",
-//             "/usr/share/ats_comments/ats_comments/db/auth.db",
+//             "/usr/share/ats_comments/ats_comments_local/db/auth.db",
 //         );
 //     };
 
@@ -48,7 +48,7 @@
 //     if comserv_comments_db.is_err() {
 //         env::set_var(
 //             "COMSERV_COMMENTS_DB",
-//             "/usr/share/ats_comments/ats_comments/db/comments.db",
+//             "/usr/share/ats_comments/ats_comments_local/db/comments.db",
 //         );
 //     };
 
@@ -56,7 +56,7 @@
 //     if comserv_esti_db.is_err() {
 //         env::set_var(
 //             "COMSERV_ESTIMATES_DB",
-//             "/usr/share/ats_comments/ats_comments/db/estimates.db",
+//             "/usr/share/ats_comments/ats_comments_local/db/estimates.db",
 //         );
 //     };
 

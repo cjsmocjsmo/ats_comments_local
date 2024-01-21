@@ -13,8 +13,8 @@ if [ -d "/usr/share/ats_comments/uploads" ]; then
 fi 
 
 
-if [ -d "/usr/share/ats_comments/ats_comments/db" ]; then
-    rm -rf "/usr/share/ats_comments/ats_comments/db";
+if [ -d "/usr/share/ats_comments/ats_comments_local/db" ]; then
+    rm -rf "/usr/share/ats_comments/ats_comments_local/db";
     echo "Removed db dir";
 fi 
 
@@ -42,7 +42,7 @@ if [ -f /usr/bin/ats_comments ]; then
 fi
 
 SYSD="/etc/systemd/system/";
-SERVFILE="/usr/share/ats_comments/ats_comments/ats_comments.service";
+SERVFILE="/usr/share/ats_comments/ats_comments_local/ats_comments.service";
 if [ ! -f $SYSD"/ats_comments.service" ]; then
     sudo cp -pvr $SERVFILE $SYSD;
     sudo chown root:root $SYSD"ats_comments.service";

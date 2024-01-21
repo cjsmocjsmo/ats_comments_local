@@ -20,7 +20,7 @@ pub mod types;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    dotenv::from_path("/usr/share/ats_comments/ats_comments/atscomments.env").ok();
+    dotenv::from_path("/usr/share/ats_comments/ats_comments_local/atscomments.env").ok();
 
     env_logger::init();
 
@@ -62,7 +62,7 @@ async fn main() -> std::io::Result<()> {
             .service(server::esti_complete)
             .service(server::upload_file) // Add the new service for file upload
             .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
-            .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
+            // .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
     })
     // .bind_openssl("0.0.0.0:443", builder)?
     .bind("192.168.0.91:8080")?
