@@ -26,6 +26,13 @@ tar = "0.4.40"
 file-owner = "0.1.2"
 futures = "0.3.30"
 base64 = "0.21.7"
+sanitize-filename = "0.5.0"
 
-
+[dependencies.uuid]
+version = "1.7.0"
+features = [
+    "v4",
+    "fast-rng",
+    "macro-diagnostics",
+]
 
