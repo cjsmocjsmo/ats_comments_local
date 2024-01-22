@@ -36,6 +36,7 @@ pub struct FullComment {
     pub date: String,
     pub accepted: String,
     pub rejected: String,
+    pub mediapath: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

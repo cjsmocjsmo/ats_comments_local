@@ -41,6 +41,7 @@ pub async fn all_comments() -> impl Responder {
         let datez: String = row.get(7).unwrap();
         let acceptedz: String = row.get(8).unwrap();
         let rejectedz: String = row.get(9).unwrap();
+        let mediapathz: String = row.get(10).unwrap();
 
         let comment = types::FullComment {
             acctid: acctidz.to_string(),
@@ -52,6 +53,7 @@ pub async fn all_comments() -> impl Responder {
             date: datez.to_string(),
             accepted: acceptedz.to_string(),
             rejected: rejectedz.to_string(),
+            mediapath: mediapathz.to_string(),
         };
         info!("Comment: {:?}", comment);
         comment_vec.push(comment);
@@ -60,79 +62,79 @@ pub async fn all_comments() -> impl Responder {
     HttpResponse::Ok().json(comment_vec)
 }
 
-#[get("/addcom/{name}/{email}/{comment}/{rating}")]
-pub async fn add_comment(f: web::Path<(String, String, String, String)>) -> impl Responder {
-    let (name, email, comment, rating) = f.into_inner();
-    let comidz = accounts::create_hash(comment.clone());
-    info!("name: {:#?}", name);
-    info!("email: {:#?}", email);
-    info!("comment: {:#?}", comment);
-    info!("rating: {:#?}", rating);
-    let has_acct = accounts::has_account(email.clone());
-    if has_acct {
-        let acct_info = accounts::account_info_from_email(email.clone());
-        let acctid = &acct_info[0].acctid;
-        let datae = &acct_info[0].date;
-        let commet = types::FullComment {
-            acctid: acctid.to_string(),
-            comid: comidz.clone(),
-            name: name.clone(),
-            email: email.clone(),
-            comment: comment.clone(),
-            rating: rating.clone(),
-            date: datae.to_string(),
-            accepted: "None".to_string(),
-            rejected: "None".to_string(),
-        };
-        info!("has_account Comment: {:#?}", commet);
-        let com_serv_comments_db =
-            env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
-        let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
-        conn.execute(
-            "INSERT INTO comments (acctid, comid, name, email, comment, date, accepted, rejected) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
-            &[&commet.acctid, &commet.comid, &commet.name, &commet.email, &commet.comment, &commet.date, &commet.accepted, &commet.rejected],
-        )
-        .expect("unable to insert comment");
+// #[get("/addcom/{name}/{email}/{comment}/{rating}")]
+// pub async fn add_comment(f: web::Path<(String, String, String, String)>) -> impl Responder {
+//     let (name, email, comment, rating) = f.into_inner();
+//     let comidz = accounts::create_hash(comment.clone());
+//     info!("name: {:#?}", name);
+//     info!("email: {:#?}", email);
+//     info!("comment: {:#?}", comment);
+//     info!("rating: {:#?}", rating);
+//     let has_acct = accounts::has_account(email.clone());
+//     if has_acct {
+//         let acct_info = accounts::account_info_from_email(email.clone());
+//         let acctid = &acct_info[0].acctid;
+//         let datae = &acct_info[0].date;
+//         let commet = types::FullComment {
+//             acctid: acctid.to_string(),
+//             comid: comidz.clone(),
+//             name: name.clone(),
+//             email: email.clone(),
+//             comment: comment.clone(),
+//             rating: rating.clone(),
+//             date: datae.to_string(),
+//             accepted: "None".to_string(),
+//             rejected: "None".to_string(),
+//         };
+//         info!("has_account Comment: {:#?}", commet);
+//         let com_serv_comments_db =
+//             env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
+//         let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
+//         conn.execute(
+//             "INSERT INTO comments (acctid, comid, name, email, comment, date, accepted, rejected) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+//             &[&commet.acctid, &commet.comid, &commet.name, &commet.email, &commet.comment, &commet.date, &commet.accepted, &commet.rejected],
+//         )
+//         .expect("unable to insert comment");
 
-        let mailz = sendmail::send_com_mail(commet).await;
-        match mailz {
-            Ok(_) => info!("Mail Sent"),
-            Err(e) => info!("Mail Error: {:?}", e),
-        };
-    } else {
-        let acct_info = accounts::create_account(name.clone(), email.clone());
-        let acctid = &acct_info.acctid;
-        let datae = &acct_info.date;
-        let fullcomment = types::FullComment {
-            acctid: acctid.to_string(),
-            comid: comidz.clone(),
-            name: name.clone(),
-            email: email.clone(),
-            comment: comment.clone(),
-            rating: rating.clone(),
-            date: datae.to_string(),
-            accepted: "None".to_string(),
-            rejected: "None".to_string(),
-        };
-        info!("create_account Comment: {:#?}", fullcomment);
-        let com_serv_comments_db =
-            env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
-        let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
-        conn.execute(
-            "INSERT INTO comments (acctid, comid, name, email, comment, rating, date, accepted, rejected) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-            &[&fullcomment.acctid, &fullcomment.comid, &fullcomment.name, &fullcomment.email, &fullcomment.comment, &rating, &fullcomment.date, &fullcomment.accepted, &fullcomment.rejected],
-        )
-        .expect("unable to insert comment");
+//         let mailz = sendmail::send_com_mail(commet).await;
+//         match mailz {
+//             Ok(_) => info!("Mail Sent"),
+//             Err(e) => info!("Mail Error: {:?}", e),
+//         };
+//     } else {
+//         let acct_info = accounts::create_account(name.clone(), email.clone());
+//         let acctid = &acct_info.acctid;
+//         let datae = &acct_info.date;
+//         let fullcomment = types::FullComment {
+//             acctid: acctid.to_string(),
+//             comid: comidz.clone(),
+//             name: name.clone(),
+//             email: email.clone(),
+//             comment: comment.clone(),
+//             rating: rating.clone(),
+//             date: datae.to_string(),
+//             accepted: "None".to_string(),
+//             rejected: "None".to_string(),
+//         };
+//         info!("create_account Comment: {:#?}", fullcomment);
+//         let com_serv_comments_db =
+//             env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
+//         let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
+//         conn.execute(
+//             "INSERT INTO comments (acctid, comid, name, email, comment, rating, date, accepted, rejected) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+//             &[&fullcomment.acctid, &fullcomment.comid, &fullcomment.name, &fullcomment.email, &fullcomment.comment, &rating, &fullcomment.date, &fullcomment.accepted, &fullcomment.rejected],
+//         )
+//         .expect("unable to insert comment");
 
-        let mailz = sendmail::send_com_mail(fullcomment).await;
-        match mailz {
-            Ok(_) => info!("Mail Sent"),
-            Err(e) => info!("Mail Error: {:?}", e),
-        };
-    };
+//         let mailz = sendmail::send_com_mail(fullcomment).await;
+//         match mailz {
+//             Ok(_) => info!("Mail Sent"),
+//             Err(e) => info!("Mail Error: {:?}", e),
+//         };
+//     };
 
-    HttpResponse::Ok().body("Comment inserted into db\n")
-}
+//     HttpResponse::Ok().body("Comment inserted into db\n")
+// }
 
 #[get("/allesti")]
 pub async fn all_estimates() -> impl Responder {
@@ -350,91 +352,7 @@ pub async fn backup() -> impl Responder {
     HttpResponse::Ok().body(msg)
 }
 
-// #[post("/upload")]
-// pub async fn upload_file(form: web::Form<types::FormData>) -> impl Responder {
-//     let name = &form.name;
-//     let email = &form.email;
-//     let rating = &form.rating;
-//     let comment = &form.comment;
-//     let filepicker = &form.filepicker;
-//     info!("name: {:#?}", name);
-//     info!("email: {:#?}", email);
-//     info!("rating: {:#?}", rating);
-//     info!("comment: {:#?}", comment);
-//     info!("filepicker: {:#?}", filepicker);
 
-//     //filpicer is an image that needs to be saved to disk
-//     let file_path = env::var("COMSERV_UPLOADS").unwrap();
-//     let file_name = format!("{}/{}", file_path, filepicker);
-//     let file_data = BASE64_STANDARD.decode(filepicker).unwrap();
-//     let mut file = File::create(file_name).unwrap();
-//     file.write_all(&file_data).unwrap();
-
-//     let has_acct = accounts::has_account(email.clone());
-//     if has_acct {
-//         let acct_info = accounts::account_info_from_email(email.clone());
-//         let acctid = &acct_info[0].acctid;
-//         let datae = &acct_info[0].date;
-//         let commet = types::FullComment {
-//             acctid: acctid.to_string(),
-//             comid: "None".to_string(),
-//             name: name.clone(),
-//             email: email.clone(),
-//             comment: comment.clone(),
-//             rating: rating.clone(),
-//             date: datae.to_string(),
-//             accepted: "None".to_string(),
-//             rejected: "None".to_string(),
-//         };
-//         info!("has_account Comment: {:#?}", commet);
-//         let com_serv_comments_db =
-//             env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
-//         let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
-//         conn.execute(
-//             "INSERT INTO comments (acctid, comid, name, email, comment, date, accepted, rejected) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
-//             &[&commet.acctid, &commet.comid, &commet.name, &commet.email, &commet.comment, &commet.date, &commet.accepted, &commet.rejected],
-//         )
-//         .expect("unable to insert comment");
-
-//         let mailz = sendmail::send_com_mail(commet).await;
-//         match mailz {
-//             Ok(_) => info!("Mail Sent"),
-//             Err(e) => info!("Mail Error: {:?}", e),
-//         };
-//     } else {
-//         let acct_info = accounts::create_account(name.clone(), email.clone());
-//         let acctid = &acct_info.acctid;
-//         let datae = &acct_info.date;
-//         let fullcomment = types::FullComment {
-//             acctid: acctid.to_string(),
-//             comid: "None".to_string(),
-//             name: name.clone(),
-//             email: email.clone(),
-//             comment: comment.clone(),
-//             rating: rating.clone(),
-//             date: datae.to_string(),
-//             accepted: "None".to_string(),
-//             rejected: "None".to_string(),
-//         };
-//         info!("create_account Comment: {:#?}", fullcomment);
-//         let com_serv_comments_db =
-//             env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
-//         let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
-//         conn.execute(
-//             "INSERT INTO comments (acctid, comid, name, email, comment, rating, date, accepted, rejected) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-//             &[&fullcomment.acctid, &fullcomment.comid, &fullcomment.name, &fullcomment.email, &fullcomment.comment, &rating, &fullcomment.date, &fullcomment.accepted, &fullcomment.rejected],
-//         )
-//         .expect("unable to insert comment");
-
-//         let mailz = sendmail::send_com_mail(fullcomment).await;
-//         match mailz {
-//             Ok(_) => info!("Mail Sent"),
-//             Err(e) => info!("Mail Error: {:?}", e),
-//         };
-//     };
-
-//     HttpResponse::Ok().body("File Saved\n")
-// }
 
 #[get("/backup")]
 pub async fn backup_file(mut payload: Multipart, file_path: String) -> Result<HttpResponse, Error> {
@@ -465,11 +383,12 @@ pub async fn backup_file(mut payload: Multipart, file_path: String) -> Result<Ht
 }
 
 
-#[post("/upload")]
-async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
+#[post("/addcom")]
+async fn add_comment(mut payload: Multipart) -> Result<HttpResponse, Error> {
     let mut name = String::new();
     let mut email = String::new();
     let mut rating = String::new();
+    let mut comment = String::new();
     let mut image_path = String::new();
     let uu_id = Uuid::new_v4();
 
@@ -492,32 +411,110 @@ async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
             "name" => {
                 while let Some(chunk) = field.next().await {
                     let namez = chunk.unwrap();
-                    name = String::from_utf8(namez.to_vec()).unwrap();
+                    name = String::from_utf8(namez.to_vec()).unwrap().trim().to_string();
                 }
             },
             "email" => {
                 while let Some(chunk) = field.next().await {
                     let emailz = chunk.unwrap();
-                    email = String::from_utf8(emailz.to_vec()).unwrap();
+                    email = String::from_utf8(emailz.to_vec()).unwrap().trim().to_string();
                 }
             },
             "rating" => {
                 while let Some(chunk) = field.next().await {
                     let ratingz = chunk.unwrap();
-                    rating = String::from_utf8(ratingz.to_vec()).unwrap();
+                    rating = String::from_utf8(ratingz.to_vec()).unwrap().trim().to_string();
+                }
+            },
+            "comment" => {
+                while let Some(chunk) = field.next().await {
+                    let commentz = chunk.unwrap();
+                    comment = String::from_utf8(commentz.to_vec()).unwrap().trim().to_string();
                 }
             },
             _ => {}
         }
     }
 
+    
+
     info!("name: {:#?}", name);
+
     info!("email: {:#?}", email);
+
     info!("rating: {:#?}", rating);
+
+    info!("comment: {:#?}", comment);
+
     info!("image_path: {:#?}", image_path);
-    // Write name, email, rating to the database
-    // This is pseudocode, replace with your actual database code
-    // db.insert("comments", vec![("name", name), ("email", email), ("rating", rating)]);
+
+    let comidz = accounts::create_hash(comment.clone());
+    let has_acct = accounts::has_account(email.clone());
+    
+    
+    if has_acct {
+        let acct_info = accounts::account_info_from_email(email.clone());
+        let acctid = &acct_info[0].acctid;
+        let datae = &acct_info[0].date;
+        let commet = types::FullComment {
+            acctid: acctid.to_string(),
+            comid: comidz.clone(),
+            name: name.clone(),
+            email: email.clone(),
+            comment: comment.clone(),
+            rating: rating.clone(),
+            date: datae.to_string(),
+            accepted: "None".to_string(),
+            rejected: "None".to_string(),
+            mediapath: image_path.clone(),
+        };
+        info!("has_account Comment: {:#?}", commet);
+        let com_serv_comments_db =
+            env::var("COMSERV_COMMENTS_DB").expect("COMSERV_COMMENTS_DB not set");
+        let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
+        conn.execute(
+            "INSERT INTO comments (acctid, comid, name, email, comment, rating, date, accepted, rejected, mediapath) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            &[&commet.acctid, &commet.comid, &commet.name, &commet.email, &commet.comment, &commet.rating, &commet.date, &commet.accepted, &commet.rejected, &commet.mediapath],
+        )
+        .expect("unable to insert comment");
+
+        let mailz = sendmail::send_com_mail(commet).await;
+        match mailz {
+            Ok(_) => info!("Mail Sent"),
+            Err(e) => info!("Mail Error: {:?}", e),
+        };
+    } else {
+        let acct_info = accounts::create_account(name.clone(), email.clone());
+        let acctid = &acct_info.acctid;
+        let datae = &acct_info.date;
+        let fullcomment = types::FullComment {
+            acctid: acctid.to_string(),
+            comid: comidz.clone(),
+            name: name.clone(),
+            email: email.clone(),
+            comment: comment.clone(),
+            rating: rating.clone(),
+            date: datae.to_string(),
+            accepted: "None".to_string(),
+            rejected: "None".to_string(),
+            mediapath: image_path.clone(),
+        };
+        info!("create_account Comment: {:#?}", fullcomment);
+        let com_serv_comments_db =
+            env::var("COMSERV_COMMENTS_DB").expect("CoMSERV_COMMENTS_DB not set");
+        let conn = rusqlite::Connection::open(com_serv_comments_db).unwrap();
+        conn.execute(
+            "INSERT INTO comments (acctid, comid, name, email, comment, rating, date, accepted, rejected, mediapath) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            &[&fullcomment.acctid, &fullcomment.comid, &fullcomment.name, &fullcomment.email, &fullcomment.comment, &fullcomment.rating, &fullcomment.date, &fullcomment.accepted, &fullcomment.rejected, &fullcomment.mediapath],
+        )
+        .expect("unable to insert comment");
+
+        let mailz = sendmail::send_com_mail(fullcomment).await;
+        match mailz {
+            Ok(_) => info!("Mail Sent"),
+            Err(e) => info!("Mail Error: {:?}", e),
+        };
+    };
 
     Ok(HttpResponse::Ok().into())
 }

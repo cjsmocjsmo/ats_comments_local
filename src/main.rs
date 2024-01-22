@@ -61,7 +61,7 @@ async fn main() -> std::io::Result<()> {
             .service(server::reject_comment)
             .service(server::esti_complete)
             .service(server::backup_file)
-            .service(server::upload_file) // Add the new service for file upload
+            // .service(server::upload_file) // Add the new service for file upload
             .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
             // .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
     })

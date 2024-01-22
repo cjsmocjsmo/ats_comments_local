@@ -62,7 +62,8 @@ pub fn create_comments_table() -> Result<()> {
             rating TEXT NOT NULL,
             date TEXT NOT NULL,
             accepted TEXT NOT NULL,
-            rejected TEXT NOT NULL
+            rejected TEXT NOT NULL,
+            mediapath TEXT NOT NULL
          )",
         (),
     )?;
