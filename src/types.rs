@@ -52,6 +52,7 @@ pub struct Estimate {
     pub intake: String,
     pub reqdate: String,
     pub completed: String,
+    pub mediapath: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
