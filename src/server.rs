@@ -480,7 +480,7 @@ async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
         match name_content {
             "filepicker" => {
                 let filename = format!("{}-{}", uu_id, content_disposition.get_filename().unwrap());
-                image_path = format!("./{}", sanitize_filename::sanitize(&filename.clone()));
+                image_path = format!("/usr/share/ats_comments/uploads/{}", sanitize_filename::sanitize(&filename.clone()));
                 let filepath = image_path.clone();
                 let mut f = web::block(move || std::fs::File::create(filepath.clone())).await.unwrap().expect("unable to create file");
 
