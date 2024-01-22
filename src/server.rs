@@ -488,7 +488,6 @@ async fn upload_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
                     let data = chunk.unwrap();
                     f = web::block(move || f.write_all(&data).map(|_| f)).await??;
                 }
-                
             },
             "name" => {
                 while let Some(chunk) = field.next().await {
