@@ -437,7 +437,7 @@ pub async fn backup() -> impl Responder {
 // }
 
 #[get("/backup")]
-pub async fn save_file(mut payload: Multipart, file_path: String) -> Result<HttpResponse, Error> {
+pub async fn backup_file(mut payload: Multipart, file_path: String) -> Result<HttpResponse, Error> {
     // iterate over multipart stream
     while let Ok(Some(mut field)) = payload.try_next().await {
         let _content_type = field.content_disposition();
