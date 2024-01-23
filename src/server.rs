@@ -248,7 +248,7 @@ pub async fn backup_file() -> impl Responder {
     let year = current_date.year();
     let month = current_date.month();
     let day = current_date.day();
-    let archive_name = format!("{}-{}-{}archive.tar.gz", year, month, day);
+    let archive_name = format!("{}-{}-{}archive.tar.gz", month, day, year);
     let fname = format!("{}/{}", up_loads_dir, archive_name);
     info!("fname: {:#?}", fname);
 
