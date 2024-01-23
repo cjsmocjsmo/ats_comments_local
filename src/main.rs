@@ -61,9 +61,7 @@ async fn main() -> std::io::Result<()> {
             .service(server::reject_comment)
             .service(server::esti_complete)
             .service(server::backup_file)
-            // .service(server::upload_file) // Add the new service for file upload
             .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
-            // .service(fs::Files::new("/uploads", uploads_path.clone()).show_files_listing())
     })
     // .bind_openssl("0.0.0.0:443", builder)?
     .bind("192.168.0.91:8080")?

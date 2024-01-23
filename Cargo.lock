@@ -365,7 +365,6 @@ dependencies = [
  "chrono",
  "dotenv",
  "env_logger",
- "file-owner",
  "flate2",
  "futures",
  "log",
@@ -696,15 +695,6 @@ name = "fastrand"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5"
-
-[[package]]
-name = "file-owner"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36f03ecafcffaf8add486d5424ffd60a25690f9da6a026692bc6c657379fc60c"
-dependencies = [
- "nix",
-]
 
 [[package]]
 name = "filetime"
@@ -1251,17 +1241,6 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "tempfile",
-]
-
-[[package]]
-name = "nix"
-version = "0.27.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2eb04e9c688eff1c89d72b407f168cf79bb9e867a9d3323ed6c01519eb9cc053"
-dependencies = [
- "bitflags 2.4.1",
- "cfg-if",
- "libc",
 ]
 
 [[package]]

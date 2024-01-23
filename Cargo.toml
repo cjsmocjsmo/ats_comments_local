@@ -23,7 +23,6 @@ dotenv = "0.15.0"
 tokio = { version = "1.35.1", features = ["full"] }
 flate2 = "1.0.28"
 tar = "0.4.40"
-file-owner = "0.1.2"
 futures = "0.3.30"
 base64 = "0.21.7"
 sanitize-filename = "0.5.0"
