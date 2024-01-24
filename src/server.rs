@@ -269,6 +269,7 @@ pub async fn backup_file() -> impl Responder {
 
 #[post("/addesti")]
 async fn add_estimate(mut payload: Multipart) -> Result<HttpResponse, Error> {
+    info!("Starting add_estimate");
     let mut name = String::new();
     let mut address = String::new();
     let mut city = String::new();
@@ -428,6 +429,7 @@ async fn add_estimate(mut payload: Multipart) -> Result<HttpResponse, Error> {
 
 #[post("/addcom")]
 async fn add_comment(mut payload: Multipart) -> Result<HttpResponse, Error> {
+    info!("Starting add_comment");
     let mut name = String::new();
     let mut email = String::new();
     let mut rating = String::new();
