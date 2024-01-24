@@ -354,72 +354,72 @@ async fn add_estimate(mut payload: Multipart) -> Result<HttpResponse, Error> {
     let eid = name.clone() + &address + &city + &phone + &email;
     let estidz = accounts::create_hash(eid.clone());
     let has_acct = accounts::has_account(email.clone());
-    if has_acct {
-        let acct_info = accounts::account_info_from_email(email.clone());
-        let acctid = &acct_info[0].acctid;
-        let today = Local::now().format("%Y-%m-%d").to_string();
-        let estimate = types::Estimate {
-            acctid: acctid.to_string(),
-            estid: estidz.clone(),
-            name: name.clone(),
-            address: address.clone(),
-            city: city.clone(),
-            phone: phone.clone(),
-            email: email.clone(),
-            comment: comment.clone(),
-            intake: today.clone(),
-            reqdate: reqdate.clone(),
-            completed: "No".to_string(),
-            mediapath: media_path.clone(),
-        };
-        info!("has_account Estimate: {:#?}", estimate);
-        let com_serv_estimates_db =
-            env::var("COMSERV_ESTIMATES_DB").expect("COMSERV_ESTIMATES_DB not set");
-        let conn = rusqlite::Connection::open(com_serv_estimates_db).unwrap();
-        conn.execute(
-            "INSERT INTO estimates (acctid, estid, name, address, city, phone, email, comment, intake, reqdate, completed, mediapath) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)",
-            &[&estimate.acctid, &estimate.estid, &estimate.name, &estimate.address, &estimate.city, &estimate.phone, &estimate.email, &estimate.comment, &estimate.intake, &estimate.reqdate, &estimate.completed, &estimate.mediapath],
-        )
-        .expect("unable to insert estimate");
+    // if has_acct {
+    //     let acct_info = accounts::account_info_from_email(email.clone());
+    //     let acctid = &acct_info[0].acctid;
+    //     let today = Local::now().format("%Y-%m-%d").to_string();
+    //     let estimate = types::Estimate {
+    //         acctid: acctid.to_string(),
+    //         estid: estidz.clone(),
+    //         name: name.clone(),
+    //         address: address.clone(),
+    //         city: city.clone(),
+    //         phone: phone.clone(),
+    //         email: email.clone(),
+    //         comment: comment.clone(),
+    //         intake: today.clone(),
+    //         reqdate: reqdate.clone(),
+    //         completed: "No".to_string(),
+    //         mediapath: media_path.clone(),
+    //     };
+    //     info!("has_account Estimate: {:#?}", estimate);
+    //     let com_serv_estimates_db =
+    //         env::var("COMSERV_ESTIMATES_DB").expect("COMSERV_ESTIMATES_DB not set");
+    //     let conn = rusqlite::Connection::open(com_serv_estimates_db).unwrap();
+    //     conn.execute(
+    //         "INSERT INTO estimates (acctid, estid, name, address, city, phone, email, comment, intake, reqdate, completed, mediapath) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)",
+    //         &[&estimate.acctid, &estimate.estid, &estimate.name, &estimate.address, &estimate.city, &estimate.phone, &estimate.email, &estimate.comment, &estimate.intake, &estimate.reqdate, &estimate.completed, &estimate.mediapath],
+    //     )
+    //     .expect("unable to insert estimate");
 
-        let mailz = sendmail::send_esti_mail(estimate).await;
-        match mailz {
-            Ok(_) => info!("Esti Mail Sent"),
-            Err(e) => info!("Mail Error: {:?}", e),
-        };
-    } else {
-        let acct_info = accounts::create_account(name.clone(), email.clone());
-        let acctid = &acct_info.acctid;
-        let today = Local::now().format("%Y-%m-%d").to_string();
-        let estimate = types::Estimate {
-            acctid: acctid.to_string(),
-            estid: estidz.clone(),
-            name: name.clone(),
-            address: address.clone(),
-            city: city.clone(),
-            phone: phone.clone(),
-            email: email.clone(),
-            comment: comment.clone(),
-            intake: today.clone(),
-            reqdate: reqdate.clone(),
-            completed: "No".to_string(),
-            mediapath: media_path.clone(),
-        };
-        info!("create_account Estimate: {:#?}", estimate);
-        let com_serv_estimates_db =
-            env::var("COMSERV_ESTIMATES_DB").expect("COMSERV_ESTIMATES_DB not set");
-        let conn = rusqlite::Connection::open(com_serv_estimates_db).unwrap();
-        conn.execute(
-            "INSERT INTO estimates (acctid, estid, name, address, city, phone, email, comment, intake, reqdate, completed, mediapath) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)",
-            &[&estimate.acctid, &estimate.estid, &estimate.name, &estimate.address, &estimate.city, &estimate.phone, &estimate.email, &estimate.comment, &estimate.intake, &estimate.reqdate, &estimate.completed, &estimate.mediapath],
-        ).expect("unable to insert estimate");
+    //     let mailz = sendmail::send_esti_mail(estimate).await;
+    //     match mailz {
+    //         Ok(_) => info!("Esti Mail Sent"),
+    //         Err(e) => info!("Mail Error: {:?}", e),
+    //     };
+    // } else {
+    //     let acct_info = accounts::create_account(name.clone(), email.clone());
+    //     let acctid = &acct_info.acctid;
+    //     let today = Local::now().format("%Y-%m-%d").to_string();
+    //     let estimate = types::Estimate {
+    //         acctid: acctid.to_string(),
+    //         estid: estidz.clone(),
+    //         name: name.clone(),
+    //         address: address.clone(),
+    //         city: city.clone(),
+    //         phone: phone.clone(),
+    //         email: email.clone(),
+    //         comment: comment.clone(),
+    //         intake: today.clone(),
+    //         reqdate: reqdate.clone(),
+    //         completed: "No".to_string(),
+    //         mediapath: media_path.clone(),
+    //     };
+    //     info!("create_account Estimate: {:#?}", estimate);
+    //     let com_serv_estimates_db =
+    //         env::var("COMSERV_ESTIMATES_DB").expect("COMSERV_ESTIMATES_DB not set");
+    //     let conn = rusqlite::Connection::open(com_serv_estimates_db).unwrap();
+    //     conn.execute(
+    //         "INSERT INTO estimates (acctid, estid, name, address, city, phone, email, comment, intake, reqdate, completed, mediapath) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)",
+    //         &[&estimate.acctid, &estimate.estid, &estimate.name, &estimate.address, &estimate.city, &estimate.phone, &estimate.email, &estimate.comment, &estimate.intake, &estimate.reqdate, &estimate.completed, &estimate.mediapath],
+    //     ).expect("unable to insert estimate");
 
-        let mailz = sendmail::send_esti_mail(estimate).await;
-        match mailz {
-            Ok(_) => info!("Esti Mail Sent"),
-            Err(e) => info!("Mail Error: {:?}", e),
-        };
-    };
+    //     let mailz = sendmail::send_esti_mail(estimate).await;
+    //     match mailz {
+    //         Ok(_) => info!("Esti Mail Sent"),
+    //         Err(e) => info!("Mail Error: {:?}", e),
+    //     };
+    // };
 
     Ok(HttpResponse::Ok().into())
 }
